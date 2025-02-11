@@ -4,7 +4,7 @@ import os
 # import matplotlib.pyplot as plt
 # import plotly.express as px
 import numpy as np
-from scipy.stats import pearsonr
+# from scipy.stats import pearsonr
 
 # 
 main_path = os.path.abspath(os.getcwd())
