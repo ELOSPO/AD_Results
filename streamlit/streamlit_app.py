@@ -35,7 +35,7 @@ def main():
     st.subheader('Forecast for Stocks 30 days ahead')
     stock = st.selectbox('Pick one stock',options= stock_list)
     # st.write("Preview of selected stock data:", df_pred[[stock]])
-    st.line_chart(df_pred[[stock]])
+    st.altair_chart(df_pred[[stock]])
     st.subheader(f'Model MAPE for {stock} in test is {round(df_mape[stock].iloc[0]*100,3)}%')
     st.write('Disclaimer: Invest in capital markets is a risky way to make money, Do not Invest money you need I WILL BE NOT RESPONSIBLE FOR YOUR ACTIONS ON FINANCIAL MARKETS')
     # print(df_pred[stock])
