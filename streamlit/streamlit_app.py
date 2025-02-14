@@ -40,7 +40,7 @@ def main():
     #     st.markdown('This streamlit app is intended to track all the strategies')
 
     # if choice == 'Forecast for Stocks':
-    st.subheader('Forecast for Stocks 30 days ahead')
+    st.header('Forecast for Stocks 30 days ahead')
     stock = st.selectbox('Pick one stock',options= stock_list)
 
     # st.write(df_real)
