@@ -1,17 +1,15 @@
 import streamlit as st
 import pandas as pd
 import os
-# import matplotlib.pyplot as plt
-# import plotly.express as px
 import numpy as np
 import altair as alt
-# from scipy.stats import pearsonr
+
 
 # 
 main_path = os.path.abspath(os.getcwd())
 data_path = os.path.join(main_path,'data')
 
-st.set_page_config(page_title='QuantTrader',
+st.set_page_config(page_title=':chart_with_upwards_trend: Stock Forecaster by The QuantTrader',
                    initial_sidebar_state= 'collapsed')
 
 
