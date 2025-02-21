@@ -12,6 +12,28 @@ data_path = os.path.join(main_path,'data')
 st.set_page_config(page_title=':chart_with_upwards_trend: Stock Forecaster by The QuantTrader',
                    initial_sidebar_state= 'collapsed')
 
+def categorize_mape(errors,stock):
+    mape = errors[stock].iloc[0]
+    if mape < 0.05:
+        return "🟢 High Reliability"
+    elif mape < 0.1:
+        return "🟡 Moderate Reliability"
+    else:
+        return "🔴 High Uncertainty"
+
+def get_recommendation(forecast_df,stock,period):
+    forecast = forecast_df[[stock]]
+    change = forecast[stock].iloc[-period] - forecast[stock].iloc[0]
+    if change >= 0.15:
+        return "🟢 Strong Buy ⬆️"
+    elif (change > 0.05) and (change < 0.15):
+        return "🟡 Buy ➚"
+    elif (change > -0.05) and (change <= 0.05):
+        return "⚪ Neutral ➖"
+    elif (change > -0.15) and (change < -0.05):
+        return "🟠 Sell ➘"
+    else:
+        return "🔴 Strong Sell ⬇️"   
 
 def main():
     # menu = ['Forecast for Stocks', 'other strat', 'About'] 
@@ -38,8 +60,13 @@ def main():
     #     st.markdown('This streamlit app is intended to track all the strategies')
 
     # if choice == 'Forecast for Stocks':
-    st.header('Forecast for Stocks 30 days ahead')
+    st.header('📈 Forecast for Stocks 30 Days Ahead')
     stock = st.selectbox('Pick one stock',options= stock_list)
+    st.markdown(f"**Forecast Accuracy:** {categorize_mape(df_mape,stock)}")
+    # st.markdown(
+    # "*MAPE (Mean Absolute Percentage Error) tells how accurate the forecast is. "
+    # "Lower MAPE means better accuracy. A MAPE of 5% means predictions are usually "
+    # "within 5% of actual stock prices.*")
 
     # st.write(df_real)
     
@@ -53,7 +80,7 @@ def main():
     df_combined["Real Price"] = df_combined["Real Price"].astype(float)
     df_maped_oot = df_combined.copy()
     df_maped_oot = df_maped_oot.dropna()
-    df_maped_oot['mape_oot'] = (df_maped_oot['Real Price'] - df_maped_oot['Predicted Price'])/df_maped_oot['Predicted Price']
+    df_maped_oot['mape_oot'] = abs(df_maped_oot['Real Price'] - df_maped_oot['Predicted Price'])/df_maped_oot['Predicted Price']
     # st.write(df_combined)
     mean_oot = df_maped_oot['mape_oot'].mean()
     df_melted = df_combined.reset_index().melt(id_vars=["fecha"], var_name="Type", value_name="Price")
@@ -93,6 +120,11 @@ def main():
     final_chart = chart + (point_chart if point_chart else alt.Chart())  # Avoid None errors
 
     st.altair_chart(final_chart, use_container_width=True)
+    # Recommendation Column
+    st.markdown(f"**Investment Recommendation 30 days ahead:** {get_recommendation(df_pred,stock,1)}")
+    st.markdown(f"**Investment Recommendation 15 days ahead:** {get_recommendation(df_pred,stock,15)}")
+    # st.markdown(f"**Investment Recommendation 5 days ahead:** {get_recommendation(df_pred,stock,25)}")
+
     st.write(f'Model percentual error for {stock} in test is {round(df_mape[stock].iloc[0]*100,2)}%')
     st.write(f'Model Out of time error for {stock} is {round(mean_oot*100,2)}%')
     
@@ -129,7 +161,7 @@ def main():
         
 
     
-    st.write('Disclaimer: Invest in capital markets is a risky way to make money, Do not Invest money you need. I WILL BE NOT RESPONSIBLE FOR YOUR ACTIONS ON FINANCIAL MARKETS')
+    st.markdown('Disclaimer: Invest in capital markets is a risky way to make money, Do not Invest money you need. I WILL BE NOT RESPONSIBLE FOR YOUR ACTIONS ON FINANCIAL MARKETS')
 
 if __name__ == '__main__':
     main()
